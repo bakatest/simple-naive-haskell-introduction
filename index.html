@@ -1,0 +1,541 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>Simple Introduction to Haskell</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=792, user-scalable=no">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<link rel="stylesheet" href="/styles/screen.css">
+  <link rel="stylesheet" href="/styles/common.css">
+	<style>
+		#cover h2 {
+			margin:30px 0 0;
+			color:#FFF;
+			text-align:center;
+			font-size:70px;
+			text-shadow: 0 0 8px rgba(0,0,0,0.5);
+		}
+		#cover p {
+			margin:10px 0 0;
+			text-align:center;
+			color:#FFF;
+			font-size:20px;
+			text-shadow: 0 0 8px rgba(0,0,0,0.5);
+		}
+		#cover p a {
+			color:#FFF;
+		}
+		.lambda {
+			font-family: monospace;
+		}
+		.note {
+			opacity: 0.3;
+		}
+	</style>
+</head>
+<body class="shower list">
+	<header class="caption">
+		<h1>Simple Introduction to Haskell</h1>
+    <p>https://bakatest.github.io/simple-naive-haskell-introduction</p>
+	</header>
+  <section class="slide cover" id="cover">
+    <div>
+      <h2>Haskell 与函数式编程</h2>
+      <p>本标题纯属虚构 如有雷同纯属巧合</p>
+      <img class="cover" src="pictures/cover.jpg" alt="">
+    </div>
+  </section>
+	<section class="slide" id="preparation">
+		<div>
+			<h2>写在前面</h2>
+			<p>
+				简单介绍一下函数式编程和 Haskell 的特性以及一些简单的使用经验，需要有一定的编程经验。
+				最好可以准备一个可以使用的 GHCi。
+			</p>
+			<p>
+				Homebrew 用户可以使用 <code>brew install haskell-stack</code> 安装 Haskell Stack 后使用
+				<code>stack new helloworld new-template</code> 创建 helloworld 工程，
+				通过 <code>stack ghci</code> 打开 GHCi。
+				(请参考 <a href="http://docs.haskellstack.org/en/stable/README/" target="_blank">Haskell Stack 文档</a>)
+			</p>
+			<p>
+				大量材料来自 <a href="https://twitter.com/cafe2code" target="_blank">@cafe2code</a>
+				在清华 Haskell 线下会上的<a href="https://www.terrorjack.moe/fptalk/" target="_blank">分享内容</a>。
+			</p>
+		</div>
+	</section>
+  <section class="slide" id="programming-language">
+    <div>
+      <h2>Programming Language</h2>
+      <table>
+				<tbody>
+					<tr>
+						<th>
+							Procedual (Imperative)
+						</th>
+						<th>
+							Functional (Declaritive)
+						</th>
+					</tr>
+					<tr>
+						<td>
+							<ul>
+								<li>C/C++</li>
+								<li>Java</li>
+								<li>Python</li>
+								<li>Ruby</li>
+								<li>JavaScript</li>
+								<li>Swift</li>
+							</ul>
+						</td>
+						<td>
+							<ul>
+								<li>Lisp</li>
+								<li>Haskell</li>
+								<li>OCaml</li>
+								<li>Erlang</li>
+								<li>Elm</li>
+								<li>F#</li>
+							</ul>
+						</td>
+					</tr>
+				</tbody>
+      </table>
+    </div>
+  </section>
+  <section class="slide" id="define-functional-programming">
+    <div>
+      <h2>什么是函数式编程</h2>
+			<figure>
+				<blockquote cite="https://en.wikipedia.org/wiki/Functional_programming">
+					In computer science, functional programming is a programming paradigm —
+					a style of building the structure and elements of computer programs—that
+					treats computation as the evaluation of mathematical functions and avoids
+					changing-state and mutable data.
+				</blockquote>
+				<figcaption>Functional Programming - Wikipedia</figcaption>
+			</figure>
+			<p class="note">
+				许多现代语言诸如 C#、Scala 引入了函数式特性，C++11 也引入了 Lambda 语法支持函数式特性。
+			</p>
+    </div>
+  </section>
+  <section class="slide" id="define-functional-programming-2">
+    <div>
+      <h2>函数式编程的特性</h2>
+			<ul>
+				<li>一等函数 (First-class functions)</li>
+				<li>引用透明 (Referential Transparency)</li>
+				<li>非严求值 (Non-strict evaluation)</li>
+				<li>...</li>
+			</ul>
+			<p class="note">
+				使用常用的术语解释：函数可以作为参数传递、函数不产生副作用以及惰性求值。
+			</p>
+    </div>
+  </section>
+	<section class="slide" id="introduce-functional-programming-1">
+		<div>
+			<h2>函数式语言</h2>
+			<ul>
+				<li>数学基础: λ-演算</li>
+				<li>动态类型: Lisp、APL</li>
+				<li>静态类型: ML、Haskell</li>
+			</ul>
+		</div>
+	</section>
+	<section class="slide" id="introduce-functional-programming-2">
+		<div>
+			<h2>函数式语言的应用</h2>
+			<ul>
+				<li>类型系统/特性的研究</li>
+				<li>领域特定语言</li>
+				<li>形式化证明</li>
+				<li>...</li>
+			</ul>
+		</div>
+	</section>
+	<section class="slide" id="introduce-lambda-calculus">
+		<div>
+			<h2>Lambda 表达式</h2>
+			<p>
+				许多现代语言引入了 Lambda 表达式特性:
+			</p>
+			<pre>
+				<code>Runnable r = <mark>() -> System.out.println("Java 8.")</mark></code>
+				<code>Runnable r = new Runnable() { <span class="comment">// In Java 7</span></code>
+				<code>    public void run() {</code>
+				<code>        System.out.println("Too verbose!");</code>
+				<code>    }</code>
+				<code>}</code>
+			</pre>
+		</div>
+	</section>
+	<section class="slide" id="lambda-calculus">
+		<div>
+			<h2>λ-演算</h2>
+			<ul>
+				<li>由阿隆佐·邱奇和他的学生斯蒂芬·科尔·克莱尼在20世纪30年代引入</li>
+				<li>最小的通用程序设计语言 (图灵完备)</li>
+				<li>各种函数式语言理论基础</li>
+			</ul>
+		</div>
+	</section>
+	<section class="slide" id="lambda-calculus-syntax">
+		<div>
+			<h2>λ-演算</h2>
+			<pre>
+				<code>&lt;expression> ::=   &lt;variable></code>
+				<code>               | λ &lt;variable> . &lt;expression></code>
+				<code>               |   &lt;expression> &lt;expression></code>
+			</pre>
+		  <div class="next">
+				<p style="float: left;">
+					三个例子:
+				</p>
+				<ul class="lambda" style="float: left; margin-left: 4em;">
+					<li>λx.x</li>
+					<li>λx.λy.x</li>
+					<li>(λx.xx)(λy.yy)</li>
+				</ul>
+		  </div>
+		</div>
+	</section>
+	<section class="slide" id="lambda-calculus-variable">
+		<div>
+			<h2>作用域规则</h2>
+			<ul>
+				<li>绑定变量 (Bound variable) vs. 自由变量 (free variable)</li>
+				<li>单个变量构成的表达式，变量是自由变量</li>
+				<li>λ表达式中，变量被最近的λ绑定</li>
+				<li>应用表达式中，两条子表达式分开考虑</li>
+			</ul>
+		  <div class="next">
+				<p style="float: left;">
+					三个例子:
+				</p>
+				<ul class="lambda" style="float: left; margin-left: 4em;">
+					<li>λx.x</li>
+					<li>λx.λy.x</li>
+					<li>(λx.xx)(λy.yy)</li>
+				</ul>
+		  </div>
+		</div>
+	</section>
+	<section class="slide" id="lambda-calculus-beta-reduction">
+		<div>
+			<h2>β-归约</h2>
+			<p>
+				将 <code>(λx.&lt;left>) &lt;right></code> 形式的表达式
+				<code>&lt;left></code>中自由出现的 <code>x</code> 重写为
+				<code>&lt;right></code> (规约顺序不定)
+			</p>
+		  <div class="next">
+				<p style="float: left;">
+					例子:
+				</p>
+				<ul class="lambda" style="float: left; margin-left: 6em;">
+					<li>(λx.x)(λx.λy.x)</li>
+					<li class="next">(λx.x)((λx.x)(λx.x))</li>
+					<li class="next">(λx.xx)(λy.yy)</li>
+					<li class="next">(λx.λy.x)(λx.x)((λx.xx)(λy.yy))</li>
+				</ul>
+		  </div>
+		</div>
+	</section>
+	<section class="slide" id="lambda-calculus-value">
+		<div>
+			<h2>求值策略</h2>
+			<ul>
+				<li>严格求值: 在函数调用时对函数调用的所有参数求值后传入函数</li>
+				<li>非严求值: 在函数调用时不对参数进行求值</li>
+			</ul>
+		  <div class="next">
+				<span class="lambda">(λx.λy.x)(λx.x)((λx.xx)(λy.yy))</span>
+				<p>
+					会得到什么结果？
+				</p>
+		  </div>
+		</div>
+	</section>
+	<section class="slide" id="lambda-calculus-currying">
+		<div>
+			<h2>柯里化 (Currying)</h2>
+			<p>
+				我们需要函数接受多个参数的时候……
+			</p>
+			<pre>
+				<code>var add = (a, b) => a + b</code>
+			</pre>
+			<div class="next">
+				<p>
+					可以改写成为下面的形式
+				</p>
+				<pre>
+					<code>var add = (a) => (b) => a + b</code>
+				</pre>
+				<p>
+					这一做法以 Haskell Curry 命名，称为柯里化 (Currying)
+				</p>
+			</div>
+		</div>
+	</section>
+  <section class="slide shout" id="haskell">
+		<div>
+			<h2>Haskell</h2>
+		</div>
+  </section>
+	<section class="slide" id="introduce-haskell">
+		<div>
+			<h2>Haskell</h2>
+			<ul>
+				<li>纯函数式语言</li>
+				<li>默认惰性求值</li>
+				<li>支持函数重载</li>
+				<li>函数式编程研究前沿</li>
+				<li>生态系统</li>
+			</ul>
+		</div>
+	</section>
+	<section class="slide" id="haskell-type-system">
+		<div>
+			<h2>类型系统</h2>
+			<p>
+				Haskell 是静态类型的函数式语言。<span class="note">那有什么好处呢？</span>
+			</p>
+			<p class="next">
+				使用 GHCi <code>:type</code> 命令:
+			</p>
+			<ul>
+				<li class="lambda next">\x -> x</li>
+				<li class="lambda next">\x -> (\y -> x)</li>
+				<li class="lambda next">(\x y -> x) (\x -> x)</li>
+				<li class="lambda next">(\x -> x x) (\y -> y y)</li>
+			</ul>
+		</div>
+	</section>
+	<section class="slide" id="haskell-primitive-types">
+		<div>
+			<h2>基本类型</h2>
+			<ul class="lambda">
+				<li>函数 \x -> x :: r -> r</li>
+				<li>整数 10 :: Num a => a</li>
+				<li>浮点数 1.1 :: Fractional a => a</li>
+				<li>字符串 "string" :: [Char]</li>
+				<li>元组 ("elem", 1) :: Num t => ([Char], t)</li>
+				<li>列表 [1, 2, 3, 5, 7, 11] :: Num t => [t]</li>
+			</ul>
+			<p class="note">
+				<code>::</code> 读作「has type of」
+			</p>
+		</div>
+	</section>
+	<section class="slide" id="haskell-list-construction">
+		<div>
+			<h2>List</h2>
+			<p>
+				列表是十分重要的数据结构。Haskell 中可以这样构造一个列表:
+			</p>
+			<pre>
+				<code>let l = [ 1, 2, 3, 4, 5 ]</code>
+				<code>let l = [ 2, 1..20 ]</code>
+				<code>let l = [ 2.. ]</code>
+				<code>let l = 1:2:3:5:7:[]</code>
+				<code>let l = [ x*2 | x &lt;- [1..100], x `mod` 3 == 0 ]</code>
+			</pre>
+			<p class="note">
+				<code>let</code> 是 GHCi 的语法糖，在 hs 模块中直接使用 <code>x = ?</code> 即可。
+			</p>
+		</div>
+	</section>
+	<section class="slide" id="haskell-list-operation">
+		<div>
+			<h2>List 运算</h2>
+			<ul class="lambda">
+				<li>map :: (a -> b) -> [a] -> [b]</li>
+				<li>filter :: (a -> Bool) -> [a] -> [a]</li>
+				<li>(++) :: [a] -> [a] -> [a]</li>
+				<li>concat :: [[a]] -> [a]</li>
+				<li>foldr :: (a -> b -> b) -> b -> [a] -> b</li>
+			</ul>
+			<p class="note">
+				这些运算同样也可以应用在字符串上，还记得字符串是什么类型么？
+			</p>
+		</div>
+	</section>
+	<section class="slide" id="haskell-pattern-match-1">
+		<div>
+			<h2>模式匹配</h2>
+			<p>
+				Haskell 的模式匹配可不知比 Python/C#/ES6 高到哪里去了。
+			</p>
+			<pre>
+				<code>factorial :: (Integral a) => a -> a</code>
+				<code>factorial 0 = 1</code>
+				<code>factorial n = n * factorial (n - 1)</code>
+			</pre>
+			<p>
+				匹配顺序从上往下。
+			</p>
+		</div>
+	</section>
+	<section class="slide" id="haskell-pattern-match-2">
+		<div>
+			<h2>模式匹配</h2>
+			<p>
+				列表和元组当然也可以
+			</p>
+			<pre>
+				<code>let xs = [(1,3), (4,3), (2,4), (5,3), (5,6), (3,1)] </code>
+				<code>let xs = [a+b | (a,b) &lt;- xs]</code>
+				<code>let x:xs = [1,2,3,5,7] </code>
+			</pre>
+		</div>
+	</section>
+	<section class="slide" id="haskell-prime-problem">
+		<div>
+			<h2>素数</h2>
+			<p>
+				一个无限长的素数数列
+			</p>
+			<pre>
+				<code>primes = filterPrime [2..]</code>
+				<code>  where filterPrime (p:xs) =</code>
+				<code>    p : filterPrime [x | x &lt;- xs, x `mod` p /= 0]</code>
+			</pre>
+			<p class="note">
+				<code>takeWhile (&lt;100) primes</code> 取出小于 100 的素数
+			</p>
+		</div>
+	</section>
+	<section class="slide" id="haskell-prime-problem-induction">
+		<div>
+			<h2>素数</h2>
+			<pre>
+				<code>primes = filterPrime [2..]</code>
+				<code>  where filterPrime (p:xs) =</code>
+				<code>    <mark>p</mark> : filterPrime [x | x &lt;- xs, x `mod` p /= 0]</code>
+			</pre>
+			<ul class="lambda">
+				<li class="next">filterPrime <mark>[ x | x &lt;- [3..], x `mod` 2 /= 0 ]</mark></li>
+				<li class="next">filterPrime [ x | x &lt;- [4..], x `mod` 3 /= 0 ] <div class="next" style="margin-left: -100%; width: 860px; height: 1px; display: inline-block; vertical-align: middle; background: #000;"></div></li>
+				<li class="next">filterPrime [ x | x &lt;- <mark>[ x | x &lt;- [3..], x `mod` 2 /= 0 ]</mark>, x `mod` 3 /= 0 ]</li>
+			</ul>
+		</div>
+	</section>
+	<section class="slide" id="haskell-recursion-essentials">
+		<div>
+			<h2>递归</h2>
+			<ul>
+				<li>许多问题都适用递归定义</li>
+				<li>注意函数绑定的变量</li>
+				<li>注意惰性求值</li>
+			</ul>
+		</div>
+	</section>
+	<section class="slide" id="introduce-monad">
+		<div>
+			<h2>Monad (单子)</h2>
+			<figure>
+				<blockquote cite="https://www.v2ex.com/t/86151">
+					自函子说穿了就是把一个范畴映射到自身的函子，
+					自函子范畴说穿了就是从小范畴映射到自身的函子所构成的以自函子为对象以自然变换为态射的范畴，
+					幺半群说穿了就是只有单个对象的范畴，给定了一个幺半群则可构造出一个仅有单个对象的小范畴使其态射由幺半群的元素给出而合成由幺半群的运算给出，
+					而单子说穿了就是自函子范畴上的这样一个幺半群。
+					这都不理解么亲连这种最基本的概念都不理解还学什么编程！
+				</blockquote>
+				<figcaption>作为上进的程序员，范畴论是必备的么？</figcaption>
+			</figure>
+		</div>
+	</section>
+	<section class="slide" id="why-monad">
+		<div>
+			<h2>Monad</h2>
+			<ul>
+				<li>在纯函数语言上实现副作用所进行的抽象</li>
+			</ul>
+			<pre>
+				<code>class Applicative m => Monad (m :: * -> *) where</code>
+				<code>  (>>=) :: m a -> (a -> m b) -> m b</code>
+				<code>  (>>) :: m a -> m b -> m b</code>
+				<code>  return :: a -> m a</code>
+				<code>  fail :: String -> m a</code>
+				<code>  	-- Defined in ‘GHC.Base’</code>
+			</pre>
+		</div>
+	</section>
+	<section class="slide" id="monad-and-cps">
+		<div>
+			<h2>Continuation-passing Style</h2>
+			<img src="pictures/cps.png" alt="" />
+			<p>
+				对 CPS 代码进行 Currying 我们可以得到与 <code>(>>=)</code> 操作符等价的定义。
+				不难发现 Monad 和 CPS 变换是同构的。
+			</p>
+			<p class="note lambda">
+				(>>=) :: m a -> (a -> m b) -> m b
+			</p>
+		</div>
+	</section>
+	<section class="slide" id="do-notation">
+		<div>
+			<h2>Monad 语法糖 — Do Notation</h2>
+			<pre>
+				<code>readFile :: FilePath -> IO [Char]</code>
+				<code>writeFile :: FilePath -> String -> IO ()</code>
+				<code>main = do</code>
+				<code>    s &lt;- readFile "test.txt"</code>
+				<code>    writeFile "test.txt" ("23333" ++ s)</code>
+			</pre>
+		</div>
+	</section>
+	<section class="slide" id="not-mentioned">
+		<div>
+			<h2>缺了什么</h2>
+			<ul>
+				<li>高阶类型系统和类型类</li>
+				<li>Kind 系统</li>
+				<li>IO 系统</li>
+				<li>Applicative/Functor</li>
+				<li>STM/Semaphore</li>
+				<li>...</li>
+			</ul>
+		</div>
+	</section>
+  <section class="slide" id="references">
+		<div>
+			<h2>学习资料</h2>
+			<ul>
+				<li><a href="http://learnyouahaskell.com/chapters">Learn You a Haskell for Great Good!</a></li>
+				<li><a href="http://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html">Functors, Applicatives, And Monads In Pictures</a></li>
+				<li><a href="http://www.inf.fu-berlin.de/lehre/WS03/alpi/lambda.pdf">A Tutorial Introduction to the Lambda Calculus</a></li>
+			</ul>
+		</div>
+  </section>
+
+  <!-- End Of Show -->
+  <section class="slide shout">
+		<div>
+			<h2>Q&amp;A</h2>
+		</div>
+  </section>
+
+  <!-- Disqus -->
+  <div class="disqus">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript" src="/scripts/disqus.js"></script>
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+  </div>
+  <!-- END Disqus -->
+
+	<!--
+		To hide progress bar from entire presentation
+		just remove “progress” element.
+		-->
+	<div class="progress"><div></div></div>
+	<script src="/scripts/shower.min.js"></script>
+	<!-- Copyright © 2014 Yours Truly, Famous Inc. -->
+	<!-- Photos by John Carey, fiftyfootshadows.net -->
+</body>
+</html>
