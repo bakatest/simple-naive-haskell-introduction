@@ -120,6 +120,87 @@
 			</p>
     </div>
   </section>
+	<section class="slide" id="lambda-expression-in-java">
+		<div>
+			<h2>Lambda 表达式</h2>
+			<p>
+				Java 8 的 Lambda 表达式:
+			</p>
+			<pre>
+				<code>Runnable r = <mark>() -> System.out.println("Java 8.")</mark></code>
+				<code>Runnable r = new Runnable() { <span class="comment">// In Java 7</span></code>
+				<code>    public void run() {</code>
+				<code>        System.out.println("Too verbose!");</code>
+				<code>    }</code>
+				<code>}</code>
+			</pre>
+		</div>
+	</section>
+	<section class="slide" id="mutable-immutable-state-1">
+		<div>
+      <h2>Mutable vs. Immutable State</h2>
+      <table>
+        <tbody>
+          <tr>
+            <th>Mutable State</th>
+            <th>Immutable State</th>
+          </tr>
+          <tr>
+            <td>
+              <pre>
+                <code>class State {</code>
+                <code>    int a;</code>
+                <code>    int b;</code>
+                <code>}</code>
+              </pre>
+            </td>
+            <td>
+              <pre>
+                <code>class State {</code>
+                <code>   final int a;</code>
+                <code>   final int b;</code>
+                <code>}</code>
+              </pre>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+	</section>
+	<section class="slide" id="mutable-immutable-state-2">
+		<div>
+      <h2>Mutable vs. Immutable State</h2>
+      <table>
+        <tbody>
+          <tr>
+            <th>Mutable State</th>
+            <th>Immutable State</th>
+          </tr>
+          <tr>
+            <td>
+              <pre>
+                <code>State setAto1(State s) {</code>
+                <code>    s.a = 1;</code>
+                <code>    return s;</code>
+                <code>}</code>
+              </pre>
+            </td>
+            <td>
+              <pre>
+                <code>(State s) -></code>
+                <code>    new State(1, s.b)</code>
+              </pre>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+	</section>
+	<section class="slide shout" id="mutable-immutable-state-3">
+		<div>
+      <h2>oldState + (State) -> State = newState</h2>
+    </div>
+	</section>
   <section class="slide" id="define-functional-programming-2">
     <div>
       <h2>函数式编程的特性</h2>
@@ -155,23 +236,12 @@
 			</ul>
 		</div>
 	</section>
-	<section class="slide" id="introduce-lambda-calculus">
+  <section class="slide shout" id="lambda-calculus">
 		<div>
-			<h2>Lambda 表达式</h2>
-			<p>
-				许多现代语言引入了 Lambda 表达式特性:
-			</p>
-			<pre>
-				<code>Runnable r = <mark>() -> System.out.println("Java 8.")</mark></code>
-				<code>Runnable r = new Runnable() { <span class="comment">// In Java 7</span></code>
-				<code>    public void run() {</code>
-				<code>        System.out.println("Too verbose!");</code>
-				<code>    }</code>
-				<code>}</code>
-			</pre>
-		</div>
-	</section>
-	<section class="slide" id="lambda-calculus">
+			<h2>λ-演算</h2>
+    </div>
+  </section>
+	<section class="slide" id="lambda-calculus-history">
 		<div>
 			<h2>λ-演算</h2>
 			<ul>
@@ -297,6 +367,13 @@
 			</ul>
 		</div>
 	</section>
+  <section class="slide" id="haskell-ghci">
+    <div>
+      <h2>GHCi</h2>
+      <p>Haskell 的 REPL 界面</p>
+      <img src="pictures/ghci.png" alt=""/>
+    </div>
+  </section>
 	<section class="slide" id="haskell-type-system">
 		<div>
 			<h2>类型系统</h2>
